@@ -5,3 +5,7 @@
 ### How to run demo
 - `npm install`
 - `npm run demo`
+
+### How to run test
+- `npm install`
+- `npm run test`
