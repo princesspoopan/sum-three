@@ -1,31 +1,28 @@
-const _ = require('lodash')
 const mergeSort = require('./sort').mergeSort
+const _ = require('lodash')
 
-module.exports = function sumThree (array, sum) {
-  const pairs = []
-  for (let i = 0; i < array.length; i++) {
-    for (let j = i + 1; j < array.length; j++) {
-      pairs.push({
-        firstIndex: i,
-        secondIndex: j,
-        sum: array[i] + array[j]
-      })
+module.exports = function sumThree (array, expectedSum) {
+  const sortedArray = mergeSort(array, (a, b) => a < b)
+  const result = []
+  for (let i = 0; i < sortedArray.length - 3; i++) {
+    const first = sortedArray[i]
+    let start = i + 1
+    let end = sortedArray.length - 1
+
+    while (start < end) {
+      const second = sortedArray[start]
+      const third = sortedArray[end]
+      const sum = first + second + third
+      if (sum === expectedSum) {
+        result.push([ first, second, third ])
+        end--
+      } else if (sum < expectedSum) {
+        start++
+      } else {
+        end--
+      }
     }
   }
-  const output = []
-  _.forEach(pairs, pair => {
-    const thirdNumber = sum - pair.sum
-    const rest = _.reject(array, (number, index) => {
-      return index === pair.firstIndex || index === pair.secondIndex
-    })
-    if (rest.indexOf(thirdNumber) > -1) {
-      const result = [
-        array[pair.firstIndex],
-        array[pair.secondIndex],
-        thirdNumber
-      ]
-      output.push(mergeSort(result, (a, b) => (a < b)))
-    }
-  })
-  return _.uniqWith(output, _.isEqual)
+
+  return _.uniqWith(result, _.isEqual)
 }
